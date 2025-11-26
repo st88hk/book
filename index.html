@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Tools and Tactics - 学习笔记</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#36CFC9',
+                        accent: '#FF7D00',
+                        dark: '#1D2129',
+                        light: '#F2F3F5',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto { content-visibility: auto; }
+            .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+            .scrollbar-hide::-webkit-scrollbar { display: none; }
+            .text-shadow { text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+            .transition-all-300 { transition: all 300ms ease-in-out; }
+        }
+    </style>
+    <style>
+        html { scroll-behavior: smooth; }
+        body { background-color: #F7F8FA; }
+        .nav-scrolled { background-color: rgba(22, 93, 255, 0.95); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .chapter-content { 
+            max-height: 0; 
+            overflow: hidden; 
+            transition: max-height 0.5s ease;
+        }
+        .chapter-expanded .chapter-content { 
+            max-height: 5000px;
+        }
+        .chapter-toggle::after { 
+            content: "+"; 
+            transition: transform 0.3s ease; 
+            display: inline-block;
+            margin-left: 8px;
+        }
+        .chapter-expanded .chapter-toggle::after { 
+            content: "-"; 
+            transform: rotate(180deg); 
+        }
+        .table-wrapper { overflow-x: auto; }
+    </style>
+</head>
+<body class="font-sans text-dark">
+    <!-- 顶部导航栏 -->
+    <header id="main-nav" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-primary text-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-2">
+                    <i class="fa fa-book text-2xl text-secondary"></i>
+                    <span class="text-xl font-bold text-shadow">交易工具与策略学习笔记</span>
+                </a>
+                <!-- 桌面端导航 -->
+                <nav class="hidden md:flex items-center gap-6">
+                    <a href="#intro" class="hover:text-secondary transition-colors">核心原则</a>
+                    <a href="#chapter1" class="hover:text-secondary transition-colors">第1章</a>
+                    <a href="#chapter2" class="hover:text-secondary transition-colors">第2章</a>
+                    <a href="#chapter3" class="hover:text-secondary transition-colors">第3章</a>
+                    <a href="#chapter4" class="hover:text-secondary transition-colors">第4章</a>
+                    <a href="#chapter5" class="hover:text-secondary transition-colors">第5章</a>
+                    <a href="#chapter6" class="hover:text-secondary transition-colors">第6章</a>
+                    <a href="#chapter7" class="hover:text-secondary transition-colors">第7章</a>
+                    <a href="#chapter8" class="hover:text-secondary transition-colors">第8章</a>
+                    <a href="#chapter9" class="hover:text-secondary transition-colors">第9章</a>
+                    <a href="#chapter10" class="hover:text-secondary transition-colors">第10章</a>
+                    <a href="#chapter11" class="hover:text-secondary transition-colors">第11章</a>
+                    <a href="#chapter12" class="hover:text-secondary transition-colors">第12章</a>
+                    <a href="#chapter13" class="hover:text-secondary transition-colors">第13章</a>
+                    <a href="#chapter14" class="hover:text-secondary transition-colors">第14章</a>
+                    <a href="#conclusion" class="hover:text-secondary transition-colors">总结</a>
+                </nav>
+                <!-- 移动端菜单按钮 -->
+                <button id="menu-toggle" class="md:hidden text-white text-xl">
+                    <i class="fa fa-bars"></i>
+                </button>
+            </div>
+        </div>
+        <!-- 移动端导航菜单 -->
+        <div id="mobile-menu" class="md:hidden hidden bg-primary/95 border-t border-secondary/20">
+            <div class="container mx-auto px-4 py-3 flex flex-col gap-3">
+                <a href="#intro" class="py-2 hover:text-secondary transition-colors">核心原则</a>
+                <a href="#chapter1" class="py-2 hover:text-secondary transition-colors">第1章：市场四阶段理论</a>
+                <a href="#chapter2" class="py-2 hover:text-secondary transition-colors">第2章：烛台分析</a>
+                <a href="#chapter3" class="py-2 hover:text-secondary transition-colors">第3章：支撑与阻力</a>
+                <a href="#chapter4" class="py-2 hover:text-secondary transition-colors">第4章：移动平均线</a>
+                <a href="#chapter5" class="py-2 hover:text-secondary transition-colors">第5章：成交量</a>
+                <a href="#chapter6" class="py-2 hover:text-secondary transition-colors">第6章：回撤分析</a>
+                <a href="#chapter7" class="py-2 hover:text-secondary transition-colors">第7章：逐根K线分析</a>
+                <a href="#chapter8" class="py-2 hover:text-secondary transition-colors">第8章：市场内部指标</a>
+                <a href="#chapter9" class="py-2 hover:text-secondary transition-colors">第9章：相对强度</a>
+                <a href="#chapter10" class="py-2 hover:text-secondary transition-colors">第10章：趋势</a>
+                <a href="#chapter11" class="py-2 hover:text-secondary transition-colors">第11章：缺口</a>
+                <a href="#chapter12" class="py-2 hover:text-secondary transition-colors">第12章：多时间框架</a>
+                <a href="#chapter13" class="py-2 hover:text-secondary transition-colors">第13章：形态失效</a>
+                <a href="#chapter14" class="py-2 hover:text-secondary transition-colors">第14章：交易与资金管理</a>
+                <a href="#conclusion" class="py-2 hover:text-secondary transition-colors">总结</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- 侧边目录 -->
+            <aside class="lg:w-1/4 xl:w-1/5 lg:sticky lg:top-24 h-fit">
+                <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+                    <h3 class="text-lg font-bold text-primary mb-4 flex items-center gap-2">
+                        <i class="fa fa-list-ul"></i> 目录
+                    </h3>
+                    <nav class="flex flex-col gap-2">
+                        <a href="#intro" class="py-1 px-3 rounded hover:bg-primary/10 hover:text-primary transition-all-300">核心原则</a>
+                        <a href="#chapter1" class="py-1 px-3 rounded hover:bg-primary/10 hover:text-primary transition-all-300">第1章：市场四阶段理论</a>
+                        <a href="#chapter2" class="py-1 px-3 rounded hover:bg-primary/10 hover:text-primary transition-all-300">第2章：烛台分析</a>
+                        <a href="#chapter3" class="py-1 px-3 rounded hover:bg-primary/10 hover:text-primary transition-all-300">第3章：支撑与阻力</a>
+                        <a href="#chapter4" class="py-1 px-3 rounded hover:bg-primary/10 hover:text-primary transition-all-300">第4章：移动平均线</a>
+                        <a href="#chapter5" class="py-1 px-3 rounded hover:bg-primary/10 hover:text-primary transition-all-300">第5章：成交量</a>
+                        <a href="#chapter6" class="py-1 px-3 rounded hover:bg-primary/10 hover:text-primary transition-all-300">第6章：回撤分析</a>
+                        <a href="#chapter7" class="py-1 px-3 rounded hover:bg-primary/10 hover:text-primary transition-all-300">第7章：逐根K线分析</a>
+                        <a href="#chapter8" class="py-1 px-3 rounded hover:bg-primary/10 hover:text-primary transition-all-300">第8章：市场内部指标</a>
+                        <a href="#chapter9" class="py-1 px-3 rounded hover:bg-primary/10 hover:text-primary transition-all-300">第9章：相对强度</a>
+                        <a href="#chapter10" class="py-1 px-3 rounded hover:bg-primary/10 hover:text-primary transition-all-300">第10章：趋势</a>
+                        <a href="#chapter11" class="py-1 px-3 rounded hover:bg-primary/10 hover:text-primary transition-all-300">第11章：缺口</a>
+                        <a href="#chapter12" class="py-1 px-3 rounded hover:bg-primary/10 hover:text-primary transition-all-300">第12章：多时间框架</a>
+                        <a href="#chapter13" class="py-1 px-3 rounded hover:bg-primary/10 hover:text-primary transition-all-300">第13章：形态失效</a>
+                        <a href="#chapter14" class="py-1 px-3 rounded hover:bg-primary/10 hover:text-primary transition-all-300">第14章：交易与资金管理</a>
+                        <a href="#conclusion" class="py-1 px-3 rounded hover:bg-primary/10 hover:text-primary transition-all-300">总结</a>
+                    </nav>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h3 class="text-lg font-bold text-primary mb-4 flex items-center gap-2">
+                        <i class="fa fa-lightbulb-o"></i> 学习提示
+                    </h3>
+                    <ul class="space-y-2 text-sm text-dark/80">
+                        <li class="flex items-start gap-2">
+                            <i class="fa fa-check-circle text-secondary mt-1"></i>
+                            <span>点击章节标题可展开/折叠内容</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa fa-check-circle text-secondary mt-1"></i>
+                            <span>使用右侧滚动条快速浏览内容</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa fa-check-circle text-secondary mt-1"></i>
+                            <span>重点内容已用高亮标记</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa fa-check-circle text-secondary mt-1"></i>
+                            <span>点击右下角按钮回到顶部</span>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- 内容区域 -->
+            <div class="lg:w-3/4 xl:w-4/5">
+                <!-- 书籍封面信息 -->
+                <section class="mb-12 text-center">
+                    <div class="max-w-4xl mx-auto">
+                        <h1 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-primary mb-4 text-shadow">Trading Tools and Tactics</h1>
+                        <p class="text-[clamp(1rem,2vw,1.2rem)] text-dark/80 mb-6">技术交易客观性方法学习笔记</p>
+                        <div class="inline-block bg-white rounded-xl shadow-md p-4 mb-8">
+                            <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+                                <span class="bg-primary/10 text-primary px-3 py-1 rounded-full flex items-center gap-2 text-sm">
+                                    <i class="fa fa-user"></i> 作者：Greg Capra
+                                </span>
+                                <span class="bg-primary/10 text-primary px-3 py-1 rounded-full flex items-center gap-2 text-sm">
+                                    <i class="fa fa-book"></i> 出版社：John Wiley & Sons, Inc.
+                                </span>
+                                <span class="bg-primary/10 text-primary px-3 py-1 rounded-full flex items-center gap-2 text-sm">
+                                    <i class="fa fa-calendar"></i> 出版时间：2011年
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 核心原则 -->
+                <section id="intro" class="mb-12 scroll-mt-24 chapter-expanded">
+                    <div class="bg-white rounded-xl shadow-md p-6 sm:p-8">
+                        <div class="flex items-center gap-3 mb-6 cursor-pointer chapter-toggle" onclick="toggleChapter('intro')">
+                            <i class="fa fa-star text-accent"></i>
+                            <h2 class="text-2xl font-bold text-primary">核心原则</h2>
+                        </div>
+                        <div class="chapter-content">
+                            <div class="space-y-4 text-dark/80">
+                                <div class="flex items-start gap-3 p-3 bg-primary/5 rounded-lg">
+                                    <i class="fa fa-check-circle text-primary text-xl mt-1"></i>
+                                    <p><strong class="text-primary">市场本质：</strong>价格行为是唯一客观标准，反映所有已知信息（供需、情绪、基本面）</p>
+                                </div>
+                                <div class="flex items-start gap-3 p-3 bg-primary/5 rounded-lg">
+                                    <i class="fa fa-check-circle text-primary text-xl mt-1"></i>
+                                    <p><strong class="text-primary">交易铁律：</strong>顺势而为，80%亏损来自逆势操作</p>
+                                </div>
+                                <div class="flex items-start gap-3 p-3 bg-primary/5 rounded-lg">
+                                    <i class="fa fa-check-circle text-primary text-xl mt-1"></i>
+                                    <p><strong class="text-primary">分析逻辑：</strong>拒绝主观预测，聚焦可验证的价格模式和市场结构</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 第1章 -->
+                <section id="chapter1" class="mb-12 scroll-mt-24">
+                    <div class="bg-white rounded-xl shadow-md p-6 sm:p-8">
+                        <div class="flex items-center gap-3 mb-6 cursor-pointer chapter-toggle" onclick="toggleChapter('chapter1')">
+                            <i class="fa fa-signal text-primary"></i>
+                            <h2 class="text-2xl font-bold text-primary">第1章：市场四阶段理论</h2>
+                        </div>
+                        <div class="chapter-content">
+                            <h3 class="text-xl font-semibold mb-4 text-dark">阶段特征与交易策略</h3>
+                            <div class="table-wrapper mb-6">
+                                <table class="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-sm">
+                                    <thead class="bg-primary text-white">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left">阶段</th>
+                                            <th class="px-4 py-3 text-left">价格结构</th>
+                                            <th class="px-4 py-3 text-left">成交量</th>
+                                            <th class="px-4 py-3 text-left">市场情绪</th>
+                                            <th class="px-4 py-3 text-left">操作建议</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">Stage 1（矛盾期）</td>
+                                            <td class="px-4 py-3 text-dark/80">横盘震荡，无明显高低点</td>
+                                            <td class="px-4 py-3 text-dark/80">低且平淡</td>
+                                            <td class="px-4 py-3 text-dark/80">冷漠（无人关注）</td>
+                                            <td class="px-4 py-3 text-dark/80">观望，不参与突破/跌破操作</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">Stage 2（上升期）</td>
+                                            <td class="px-4 py-3 text-dark/80">更高高点+更高低点</td>
+                                            <td class="px-4 py-3 text-dark/80">上涨放量，回调缩量</td>
+                                            <td class="px-4 py-3 text-dark/80">贪婪（多头主导）</td>
+                                            <td class="px-4 py-3 text-dark/80">回调至次要支撑位做多</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">Stage 3（犹豫期）</td>
+                                            <td class="px-4 py-3 text-dark/80">宽幅横盘，突破频繁失效</td>
+                                            <td class="px-4 py-3 text-dark/80">忽高忽低，无规律</td>
+                                            <td class="px-4 py-3 text-dark/80">分歧（多空博弈）</td>
+                                            <td class="px-4 py-3 text-dark/80">轻仓区间交易或观望</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">Stage 4（下降期）</td>
+                                            <td class="px-4 py-3 text-dark/80">更低高点+更低低点</td>
+                                            <td class="px-4 py-3 text-dark/80">下跌放量，反弹缩量</td>
+                                            <td class="px-4 py-3 text-dark/80">恐惧（空头主导）</td>
+                                            <td class="px-4 py-3 text-dark/80">反弹至次要阻力位做空</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">核心要点</h3>
+                            <ul class="list-disc pl-6 text-dark/80 mb-4 space-y-2">
+                                <li>阶段转换的关键：价格突破Stage 1区间且放量→进入Stage 2；Stage 2跌破关键支撑→进入Stage 3/4</li>
+                                <li>避免在Stage 1/3重仓交易，趋势不明时耐心等待更清晰信号</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 第2章 -->
+                <section id="chapter2" class="mb-12 scroll-mt-24">
+                    <div class="bg-white rounded-xl shadow-md p-6 sm:p-8">
+                        <div class="flex items-center gap-3 mb-6 cursor-pointer chapter-toggle" onclick="toggleChapter('chapter2')">
+                            <i class="fa fa-bar-chart text-primary"></i>
+                            <h2 class="text-2xl font-bold text-primary">第2章：烛台分析</h2>
+                        </div>
+                        <div class="chapter-content">
+                            <h3 class="text-xl font-semibold mb-4 text-dark">单根烛台核心信号</h3>
+                            <div class="table-wrapper mb-6">
+                                <table class="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-sm">
+                                    <thead class="bg-primary text-white">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left">烛台类型</th>
+                                            <th class="px-4 py-3 text-left">特征</th>
+                                            <th class="px-4 py-3 text-left">市场含义</th>
+                                            <th class="px-4 py-3 text-left">出现位置</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">看涨宽幅烛台（+WRB）</td>
+                                            <td class="px-4 py-3 text-dark/80">开盘近低点，收盘近高点，影线极短</td>
+                                            <td class="px-4 py-3 text-dark/80">多头完全掌控，可能开启新趋势</td>
+                                            <td class="px-4 py-3 text-dark/80">支撑位附近或趋势启动初期</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">底部影线烛台（BT）</td>
+                                            <td class="px-4 py-3 text-dark/80">下影线长（≥实体2倍），收盘价高于烛台中点</td>
+                                            <td class="px-4 py-3 text-dark/80">空头打压后多头反击，反转信号强</td>
+                                            <td class="px-4 py-3 text-dark/80">下跌末期或支撑位附近</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">看跌宽幅烛台（-WRB）</td>
+                                            <td class="px-4 py-3 text-dark/80">开盘近高点，收盘近低点，影线极短</td>
+                                            <td class="px-4 py-3 text-dark/80">空头完全掌控，可能开启新下跌</td>
+                                            <td class="px-4 py-3 text-dark/80">阻力位附近或趋势末期</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">十字星（Doji）</td>
+                                            <td class="px-4 py-3 text-dark/80">开盘价与收盘价接近（实体极小），影线可长可短</td>
+                                            <td class="px-4 py-3 text-dark/80">多空僵持，需后续烛台确认方向</td>
+                                            <td class="px-4 py-3 text-dark/80">趋势顶部/底部或关键位置</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">多烛台组合形态</h3>
+                            <ul class="list-disc pl-6 text-dark/80 mb-6 space-y-2">
+                                <li><strong>COG（趋势反转）</strong>：3根及以上同方向K线后，出现反向K线且穿透前一根K线实体50%以上（例：3根阴线后，阳线穿阴实体一半以上→看涨反转）</li>
+                                <li><strong>窄幅烛台（NRB）</strong>：区间小于前几根烛台，表明动量放缓，可能是趋势休整或反转前兆</li>
+                                <li><strong>宽幅烛台（WRB）</strong>：区间为近期平均的1.5倍以上，横盘后出现→可能开启新趋势；趋势末期出现→警惕"耗尽行情"</li>
+                            </ul>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">实战原则</h3>
+                            <ul class="list-disc pl-6 text-dark/80 space-y-2">
+                                <li>不纠结形态名称，聚焦"位置+成交量"（如支撑位+BT+放量→可靠性高）</li>
+                                <li>大时间框架（日线/周线）烛台形态比小时间框架（5分钟/1分钟）更可靠</li>
+                                <li>单一烛台信号需结合其他工具验证，避免孤立决策</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 第3章 -->
+                <section id="chapter3" class="mb-12 scroll-mt-24">
+                    <div class="bg-white rounded-xl shadow-md p-6 sm:p-8">
+                        <div class="flex items-center gap-3 mb-6 cursor-pointer chapter-toggle" onclick="toggleChapter('chapter3')">
+                            <i class="fa fa-shield text-primary"></i>
+                            <h2 class="text-2xl font-bold text-primary">第3章：支撑与阻力</h2>
+                        </div>
+                        <div class="chapter-content">
+                            <h3 class="text-xl font-semibold mb-4 text-dark">支撑阻力的核心来源（按优先级排序）</h3>
+                            <ol class="list-decimal pl-6 text-dark/80 mb-6 space-y-2">
+                                <li><strong>前期高低点</strong>：尤其是有成交量配合的高低点（反映市场"价格记忆"）</li>
+                                <li><strong>缺口区域</strong>：缺口代表市场情绪突变，常成为后续支撑/阻力</li>
+                                <li><strong>移动平均线</strong>：20MA（短期）、40MA（中期）、200MA（长期）</li>
+                                <li><strong>趋势线</strong>：连接2个以上高点（下降趋势线）或低点（上升趋势线）</li>
+                            </ol>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">支撑与阻力的转换规律</h3>
+                            <div class="p-4 bg-primary/5 rounded-lg mb-6">
+                                <p class="text-dark/80 mb-2"><strong class="text-primary">核心原则：</strong>阻力位被放量突破后→转化为支撑位；支撑位被放量跌破后→转化为阻力位</p>
+                                <p class="text-dark/80 font-medium mb-1">转换有效性判断：</p>
+                                <ul class="list-disc pl-6 text-dark/80 space-y-1">
+                                    <li>突破/跌破时成交量（放量比缩量更有效）</li>
+                                    <li>突破/跌破后的回测结果（不回抽关键位置→确认有效）</li>
+                                    <li>价格在该位置的停留时间（停留越长→有效性越高）</li>
+                                </ul>
+                            </div>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">实战应用</h3>
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">入场时机</h4>
+                            <ul class="list-disc pl-6 text-dark/80 mb-4 space-y-2">
+                                <li>上升趋势：价格回调至支撑位+看涨烛台形态（如BT、+WRB）→买入</li>
+                                <li>下降趋势：价格反弹至阻力位+看跌烛台形态（如-WRB、流星线）→卖出</li>
+                            </ul>
+                            
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">止损设置</h4>
+                            <ul class="list-disc pl-6 text-dark/80 mb-4 space-y-2">
+                                <li>多头：止损在支撑位下方1-2个点（避免被"假突破"止损）</li>
+                                <li>空头：止损在阻力位上方1-2个点</li>
+                            </ul>
+                            
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">目标位确定</h4>
+                            <ul class="list-disc pl-6 text-dark/80 mb-6 space-y-2">
+                                <li>第一目标：最近的阻力位（多头）或支撑位（空头）</li>
+                                <li>第二目标：新趋势的高低点（用移动止损跟随）</li>
+                            </ul>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">常见误区</h3>
+                            <ul class="list-disc pl-6 text-dark/80 space-y-2">
+                                <li>过度关注精确价格（支撑阻力是"区域"，允许±1-2%波动）</li>
+                                <li>忽视成交量验证（价格到达关键位置但缩量→信号可靠性低）</li>
+                                <li>孤立看待支撑阻力（需结合趋势阶段、烛台形态综合判断）</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 第4章 -->
+                <section id="chapter4" class="mb-12 scroll-mt-24">
+                    <div class="bg-white rounded-xl shadow-md p-6 sm:p-8">
+                        <div class="flex items-center gap-3 mb-6 cursor-pointer chapter-toggle" onclick="toggleChapter('chapter4')">
+                            <i class="fa fa-line-chart text-primary"></i>
+                            <h2 class="text-2xl font-bold text-primary">第4章：移动平均线（MA）</h2>
+                        </div>
+                        <div class="chapter-content">
+                            <h3 class="text-xl font-semibold mb-4 text-dark">关键MA周期与作用</h3>
+                            <div class="table-wrapper mb-6">
+                                <table class="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-sm">
+                                    <thead class="bg-primary text-white">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left">周期</th>
+                                            <th class="px-4 py-3 text-left">核心作用</th>
+                                            <th class="px-4 py-3 text-left">应用场景</th>
+                                            <th class="px-4 py-3 text-left">注意事项</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">20MA</td>
+                                            <td class="px-4 py-3 text-dark/80">识别短期趋势方向，动态支撑/阻力</td>
+                                            <td class="px-4 py-3 text-dark/80">日内交易、短期趋势跟踪</td>
+                                            <td class="px-4 py-3 text-dark/80">噪音较多，需结合价格行为</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">40MA</td>
+                                            <td class="px-4 py-3 text-dark/80">确认中期趋势强度，过滤短期波动</td>
+                                            <td class="px-4 py-3 text-dark/80">日线交易、趋势确认</td>
+                                            <td class="px-4 py-3 text-dark/80">比20MA滞后，但可靠性更高</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">200MA</td>
+                                            <td class="px-4 py-3 text-dark/80">判断长期趋势分水岭，区分牛熊市场</td>
+                                            <td class="px-4 py-3 text-dark/80">周线分析、长期投资</td>
+                                            <td class="px-4 py-3 text-dark/80">对短期交易参考价值有限</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">MA的正确应用方法</h3>
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">趋势方向判断</h4>
+                            <ul class="list-disc pl-6 text-dark/80 mb-4 space-y-2">
+                                <li>上升趋势：价格在MA上方+MA斜率向上（20MA在40MA上方→趋势更强）</li>
+                                <li>下降趋势：价格在MA下方+MA斜率向下（20MA在40MA下方→趋势更强）</li>
+                            </ul>
+                            
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">动态支撑/阻力</h4>
+                            <ul class="list-disc pl-6 text-dark/80 mb-4 space-y-2">
+                                <li>上升趋势：20MA常成为价格回调的支撑位</li>
+                                <li>下降趋势：20MA常成为价格反弹的阻力位</li>
+                            </ul>
+                            
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">趋势转换警示</h4>
+                            <p class="text-dark/80 mb-6">价格从MA一侧穿越至另一侧+MA斜率转向→可能预示趋势改变（例：价格跌破20MA+20MA向下→短期趋势转弱）</p>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">常见误用与纠正</h3>
+                            <div class="space-y-4 mb-6">
+                                <div class="flex items-start gap-3">
+                                    <div class="bg-accent/10 p-2 rounded-full">
+                                        <i class="fa fa-times text-accent"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-dark/80 font-medium">错误1：将MA作为买卖信号源</p>
+                                        <p class="text-dark/80">MA滞后于价格，单独使用易产生假信号</p>
+                                        <p class="text-primary text-sm mt-1">纠正：MA仅辅助确认价格行为</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <div class="bg-accent/10 p-2 rounded-full">
+                                        <i class="fa fa-times text-accent"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-dark/80 font-medium">错误2：过度依赖MA支撑/阻力</p>
+                                        <p class="text-dark/80">MA的支撑/阻力弱于前期高低点</p>
+                                        <p class="text-primary text-sm mt-1">纠正：优先关注价格行为，MA作为补充</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <div class="bg-accent/10 p-2 rounded-full">
+                                        <i class="fa fa-times text-accent"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-dark/80 font-medium">错误3：选择不当周期</p>
+                                        <p class="text-dark/80">短周期MA噪音大，长周期MA滞后严重</p>
+                                        <p class="text-primary text-sm mt-1">纠正：日内交易用20MA，日线交易用40MA</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">实战案例</h3>
+                            <ul class="list-disc pl-6 text-dark/80 space-y-2">
+                                <li>上升趋势中，价格回调至20MA附近+底部影线烛台+放量→买入信号</li>
+                                <li>价格跌破20MA后，反弹无法站上20MA+20MA向下→卖出信号</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 第5章 -->
+                <section id="chapter5" class="mb-12 scroll-mt-24">
+                    <div class="bg-white rounded-xl shadow-md p-6 sm:p-8">
+                        <div class="flex items-center gap-3 mb-6 cursor-pointer chapter-toggle" onclick="toggleChapter('chapter5')">
+                            <i class="fa fa-bar-chart text-primary"></i>
+                            <h2 class="text-2xl font-bold text-primary">第5章：成交量</h2>
+                        </div>
+                        <div class="chapter-content">
+                            <h3 class="text-xl font-semibold mb-4 text-dark">成交量的核心意义</h3>
+                            <div class="p-4 bg-primary/5 rounded-lg mb-6">
+                                <p class="text-dark/80 mb-2"><i class="fa fa-info-circle text-primary mr-2"></i>验证价格行为的有效性（无成交量的价格变动→不可持续，可能是"假动作"）</p>
+                                <p class="text-dark/80"><i class="fa fa-info-circle text-primary mr-2"></i>反映市场参与者情绪（放量→情绪活跃，缩量→情绪平淡）</p>
+                            </div>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">成交量与价格的配合关系</h3>
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">趋势确认</h4>
+                            <ul class="list-disc pl-6 text-dark/80 mb-4 space-y-2">
+                                <li>上升趋势：价格上涨时成交量放大，回调时成交量缩小→趋势健康</li>
+                                <li>下降趋势：价格下跌时成交量放大，反弹时成交量缩小→趋势延续</li>
+                            </ul>
+                            
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">反转警示</h4>
+                            <ul class="list-disc pl-6 text-dark/80 mb-4 space-y-2">
+                                <li>价格创新高/新低，但成交量明显萎缩→量价背离，趋势可能衰竭</li>
+                                <li>关键支撑/阻力位附近出现放量反转烛台（如BT+放量、COG+放量）→反转概率大幅提高</li>
+                            </ul>
+                            
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">突破有效性验证</h4>
+                            <ul class="list-disc pl-6 text-dark/80 mb-6 space-y-2">
+                                <li>价格突破阻力位时，成交量需达到近期平均成交量的1.5倍以上→有效突破</li>
+                                <li>缩量突破→"假突破"概率高，价格易回测原阻力位</li>
+                            </ul>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">成交量分析的实战技巧</h3>
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">成交量峰值分析</h4>
+                            <p class="text-dark/80 mb-4">成交量峰值常出现在趋势转折点或重要消息发布时</p>
+                            <ul class="list-disc pl-6 text-dark/80 mb-4 space-y-2">
+                                <li>上升趋势末期：价格创新高+成交量达阶段性峰值→可能是顶部信号</li>
+                                <li>下降趋势末期：放量恐慌性抛售→可能是底部临近信号</li>
+                            </ul>
+                            
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">成交量与烛台结合</h4>
+                            <ul class="list-disc pl-6 text-dark/80 mb-4 space-y-2">
+                                <li>+WRB+放量→多头力量强劲，趋势延续概率高</li>
+                                <li>底部影线烛台+放量→确认支撑有效，反弹概率高</li>
+                                <li>十字星+异常放大成交量→多空分歧巨大，警惕趋势反转</li>
+                            </ul>
+                            
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">成交量区间对比</h4>
+                            <p class="text-dark/80 mb-6">当前成交量与近20日平均成交量对比，若为2倍以上→市场情绪异常活跃，价格变动可靠性更高</p>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">常见误区</h3>
+                            <ul class="list-disc pl-6 text-dark/80 space-y-2">
+                                <li>过度关注单日成交量（单日波动可能受消息影响，需结合多日趋势）</li>
+                                <li>忽视个股与大盘成交量的关系（大盘缩量但个股放量→信号更可靠）</li>
+                                <li>脱离价格行为分析成交量（成交量需结合价格形态、支撑阻力，单独分析意义有限）</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 第6章 -->
+                <section id="chapter6" class="mb-12 scroll-mt-24">
+                    <div class="bg-white rounded-xl shadow-md p-6 sm:p-8">
+                        <div class="flex items-center gap-3 mb-6 cursor-pointer chapter-toggle" onclick="toggleChapter('chapter6')">
+                            <i class="fa fa-undo text-primary"></i>
+                            <h2 class="text-2xl font-bold text-primary">第6章：回撤分析</h2>
+                        </div>
+                        <div class="chapter-content">
+                            <h3 class="text-xl font-semibold mb-4 text-dark">回撤的本质与意义</h3>
+                            <p class="text-dark/80 mb-6">回撤是趋势中的短期反向波动，本质是获利盘回吐或短期资金重新分配。健康的回撤有助于趋势延续（清洗浮筹），过度的回撤可能预示趋势反转。</p>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">常见回撤比例（基于斐波那契数列）</h3>
+                            <div class="flex flex-wrap gap-4 mb-6">
+                                <div class="bg-primary/10 px-4 py-3 rounded-lg flex-1 min-w-[120px] text-center">
+                                    <p class="text-primary font-bold text-xl">38.2%</p>
+                                    <p class="text-dark/70 text-sm">浅度回撤</p>
+                                </div>
+                                <div class="bg-primary/10 px-4 py-3 rounded-lg flex-1 min-w-[120px] text-center">
+                                    <p class="text-primary font-bold text-xl">50%</p>
+                                    <p class="text-dark/70 text-sm">中度回撤</p>
+                                </div>
+                                <div class="bg-primary/10 px-4 py-3 rounded-lg flex-1 min-w-[120px] text-center">
+                                    <p class="text-primary font-bold text-xl">61.8%</p>
+                                    <p class="text-dark/70 text-sm">深度回撤</p>
+                                </div>
+                            </div>
+                            <p class="text-dark/80 mb-6">上升趋势中，价格回调至这些比例附近且获得支撑→理想入场机会。超过61.8%且跌破关键支撑→趋势可能转弱。</p>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">回撤的有效性判断（有效支撑位需满足）</h3>
+                            <div class="space-y-3 mb-6">
+                                <div class="flex items-start gap-3">
+                                    <div class="bg-secondary/20 p-2 rounded-full h-fit">
+                                        <span class="text-secondary font-bold">1</span>
+                                    </div>
+                                    <p class="text-dark/80">价格到达关键支撑位（前期高点、MA、斐波那契回撤位）</p>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <div class="bg-secondary/20 p-2 rounded-full h-fit">
+                                        <span class="text-secondary font-bold">2</span>
+                                    </div>
+                                    <p class="text-dark/80">出现看涨烛台形态（如BT、COG、+WRB）</p>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <div class="bg-secondary/20 p-2 rounded-full h-fit">
+                                        <span class="text-secondary font-bold">3</span>
+                                    </div>
+                                    <p class="text-dark/80">成交量放大（确认买盘进场）</p>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <div class="bg-secondary/20 p-2 rounded-full h-fit">
+                                        <span class="text-secondary font-bold">4</span>
+                                    </div>
+                                    <p class="text-dark/80">价格快速反弹，远离支撑位（避免"假支撑"）</p>
+                                </div>
+                            </div>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">回撤交易策略</h3>
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">入场时机</h4>
+                            <ul class="list-disc pl-6 text-dark/80 mb-4 space-y-2">
+                                <li>轻仓入场：价格回调至38.2%-50%回撤位+看涨烛台形态</li>
+                                <li>加仓入场：价格进一步回调至61.8%回撤位+支撑有效（如放量反弹）</li>
+                            </ul>
+                            
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">止损设置</h4>
+                            <p class="text-dark/80 mb-4">止损在回撤低点下方1-2个点，或关键支撑位下方</p>
+                            
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">目标位确定</h4>
+                            <ul class="list-disc pl-6 text-dark/80 mb-6 space-y-2">
+                                <li>第一目标：前期高点（到达后可减仓50%）</li>
+                                <li>第二目标：新的高点（剩余仓位用移动止损跟随）</li>
+                            </ul>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">回撤与反转的区别</h3>
+                            <div class="table-wrapper mb-4">
+                                <table class="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-sm">
+                                    <thead class="bg-primary text-white">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left">特征</th>
+                                            <th class="px-4 py-3 text-left">健康回撤</th>
+                                            <th class="px-4 py-3 text-left">趋势反转</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">成交量</td>
+                                            <td class="px-4 py-3 text-dark/80">回撤时缩量，反弹时放量</td>
+                                            <td class="px-4 py-3 text-dark/80">下跌时放量，反弹时缩量</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">价格形态</td>
+                                            <td class="px-4 py-3 text-dark/80">关键支撑位止跌，出现看涨形态</td>
+                                            <td class="px-4 py-3 text-dark/80">跌破关键支撑位，出现看跌形态</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">MA位置</td>
+                                            <td class="px-4 py-3 text-dark/80">价格在20MA/40MA上方止跌</td>
+                                            <td class="px-4 py-3 text-dark/80">价格跌破20MA/40MA且无法收回</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 第7章 -->
+                <section id="chapter7" class="mb-12 scroll-mt-24">
+                    <div class="bg-white rounded-xl shadow-md p-6 sm:p-8">
+                        <div class="flex items-center gap-3 mb-6 cursor-pointer chapter-toggle" onclick="toggleChapter('chapter7')">
+                            <i class="fa fa-th-list text-primary"></i>
+                            <h2 class="text-2xl font-bold text-primary">第7章：逐根K线分析</h2>
+                        </div>
+                        <div class="chapter-content">
+                            <h3 class="text-xl font-semibold mb-4 text-dark">K线实体分析</h3>
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">实体大小</h4>
+                            <p class="text-dark/80 mb-4">实体越大→该方向力量越强（大阳线→多头掌控，大阴线→空头掌控）</p>
+                            
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">实体位置</h4>
+                            <ul class="list-disc pl-6 text-dark/80 mb-6 space-y-2">
+                                <li>实体靠近K线高点→收盘时该方向占优（阳线靠近高点→多头强势）</li>
+                                <li>实体靠近K线低点→收盘时反向力量占优（阳线靠近低点→空头仍有力量）</li>
+                                <li>实体居中→多空博弈激烈，尚未分出胜负</li>
+                            </ul>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">K线影线分析</h3>
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">上影线</h4>
+                            <p class="text-dark/80 mb-4">上影线越长→上方抛压越大</p>
+                            <ul class="list-disc pl-6 text-dark/80 mb-4 space-y-2">
+                                <li>阻力位附近出现长上影线→看跌信号</li>
+                                <li>支撑位附近出现长上影线→可能是多头试探上方阻力</li>
+                            </ul>
+                            
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">下影线</h4>
+                            <p class="text-dark/80 mb-4">下影线越长→下方支撑越强</p>
+                            <ul class="list-disc pl-6 text-dark/80 mb-6 space-y-2">
+                                <li>支撑位附近出现长下影线→看涨信号</li>
+                                <li>阻力位附近出现长下影线→可能是空头试探下方支撑</li>
+                            </ul>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">关键K线类型的实战解读</h3>
+                            <div class="table-wrapper mb-6">
+                                <table class="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-sm">
+                                    <thead class="bg-primary text-white">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left">K线类型</th>
+                                            <th class="px-4 py-3 text-left">特征</th>
+                                            <th class="px-4 py-3 text-left">市场含义</th>
+                                            <th class="px-4 py-3 text-left">出现位置</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">锤子线（Hammer）</td>
+                                            <td class="px-4 py-3 text-dark/80">小实体，长下影（≥实体2倍），上影短或无</td>
+                                            <td class="px-4 py-3 text-dark/80">下跌趋势末期，多头开始反击，可能反转</td>
+                                            <td class="px-4 py-3 text-dark/80">下降趋势底部或支撑位</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">流星线（Shooting Star）</td>
+                                            <td class="px-4 py-3 text-dark/80">小实体，长上影（≥实体2倍），下影短或无</td>
+                                            <td class="px-4 py-3 text-dark/80">上升趋势末期，空头开始反击，可能反转</td>
+                                            <td class="px-4 py-3 text-dark/80">上升趋势顶部或阻力位</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">吞没形态（Engulfing）</td>
+                                            <td class="px-4 py-3 text-dark/80">后一根K线实体完全吞没前一根K线实体</td>
+                                            <td class="px-4 py-3 text-dark/80">趋势反转信号（看涨吞没→底部，看跌吞没→顶部）</td>
+                                            <td class="px-4 py-3 text-dark/80">趋势顶部/底部</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">刺透形态（Piercing）</td>
+                                            <td class="px-4 py-3 text-dark/80">阳线穿透前一根阴线实体50%以上</td>
+                                            <td class="px-4 py-3 text-dark/80">底部反转信号，多头力量较强</td>
+                                            <td class="px-4 py-3 text-dark/80">下跌趋势末期</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">逐根K线分析的实战原则</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div class="bg-primary/5 p-4 rounded-lg">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <i class="fa fa-map-marker text-primary"></i>
+                                        <p class="font-medium text-dark">结合位置分析</p>
+                                    </div>
+                                    <p class="text-dark/80 text-sm">同一根K线在支撑位和阻力位的含义完全不同</p>
+                                </div>
+                                <div class="bg-primary/5 p-4 rounded-lg">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <i class="fa fa-bar-chart text-primary"></i>
+                                        <p class="font-medium text-dark">结合成交量验证</p>
+                                    </div>
+                                    <p class="text-dark/80 text-sm">K线形态+放量→信号更可靠</p>
+                                </div>
+                                <div class="bg-primary/5 p-4 rounded-lg">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <i class="fa fa-history text-primary"></i>
+                                        <p class="font-medium text-dark">结合前后K线</p>
+                                    </div>
+                                    <p class="text-dark/80 text-sm">单根K线意义有限，需看其在K线序列中的位置</p>
+                                </div>
+                                <div class="bg-primary/5 p-4 rounded-lg">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <i class="fa fa-signal text-primary"></i>
+                                        <p class="font-medium text-dark">结合趋势阶段</p>
+                                    </div>
+                                    <p class="text-dark/80 text-sm">K线形态在不同趋势阶段的含义不同</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 第8章 -->
+                <section id="chapter8" class="mb-12 scroll-mt-24">
+                    <div class="bg-white rounded-xl shadow-md p-6 sm:p-8">
+                        <div class="flex items-center gap-3 mb-6 cursor-pointer chapter-toggle" onclick="toggleChapter('chapter8')">
+                            <i class="fa fa-signal text-primary"></i>
+                            <h2 class="text-2xl font-bold text-primary">第8章：市场内部指标</h2>
+                        </div>
+                        <div class="chapter-content">
+                            <h3 class="text-xl font-semibold mb-4 text-dark">市场内部指标的核心作用</h3>
+                            <ul class="list-disc pl-6 text-dark/80 mb-6 space-y-2">
+                                <li>衡量市场广度（参与度）和强度（上涨/下跌力量）</li>
+                                <li>帮助判断市场整体健康状况，识别潜在趋势反转</li>
+                                <li>适用于大盘分析，对个股指导意义有限</li>
+                            </ul>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">关键市场内部指标解析</h3>
+                            <div class="table-wrapper mb-6">
+                                <table class="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-sm">
+                                    <thead class="bg-primary text-white">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left">指标</th>
+                                            <th class="px-4 py-3 text-left">计算方式/核心逻辑</th>
+                                            <th class="px-4 py-3 text-left">解读方法</th>
+                                            <th class="px-4 py-3 text-left">实战应用</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">ADL（Advance-Decline Line）</td>
+                                            <td class="px-4 py-3 text-dark/80">每日上涨股票数-下跌股票数，累计计算</td>
+                                            <td class="px-4 py-3 text-dark/80">ADL与大盘指数同步上涨→趋势健康；ADL与指数背离→趋势可能反转</td>
+                                            <td class="px-4 py-3 text-dark/80">大盘健康状况判断，识别顶部/底部背离</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">TRIN（Trading Index）</td>
+                                            <td class="px-4 py-3 text-dark/80">（上涨股票数/下跌股票数）/（上涨成交量/下跌成交量）</td>
+                                            <td class="px-4 py-3 text-dark/80">TRIN<1→上涨股票成交量更大，市场偏强；TRIN>1→下跌股票成交量更大，市场偏弱；极端值（<0.5或>2.0）→预示反转</td>
+                                            <td class="px-4 py-3 text-dark/80">日内市场强度判断，捕捉短期反转信号</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">McClellan Oscillator</td>
+                                            <td class="px-4 py-3 text-dark/80">基于ADL的指数平滑指标（短期EMA-长期EMA）</td>
+                                            <td class="px-4 py-3 text-dark/80">上穿零线→买入信号；下穿零线→卖出信号；极端负值（<-50）→底部信号；极端正值（>50）→顶部信号</td>
+                                            <td class="px-4 py-3 text-dark/80">大盘短期动量判断，辅助趋势反转确认</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">实战应用</h3>
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">大盘健康状况判断</h4>
+                            <ul class="list-disc pl-6 text-dark/80 mb-4 space-y-2">
+                                <li>健康上升趋势：指数上涨+ADL上涨+TRIN<1+McClellan Oscillator正值</li>
+                                <li>虚假繁荣：指数上涨但ADL下跌+TRIN>1（权重股拉抬，个股普跌）</li>
+                            </ul>
+                            
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">趋势反转预警</h4>
+                            <ul class="list-disc pl-6 text-dark/80 mb-4 space-y-2">
+                                <li>顶部预警：指数创新高但ADL未创新高+McClellan Oscillator顶背离</li>
+                                <li>底部预警：指数创新低但ADL未创新低+McClellan Oscillator底背离</li>
+                            </ul>
+                            
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">个股与大盘的配合分析</h4>
+                            <ul class="list-disc pl-6 text-dark/80 mb-6 space-y-2">
+                                <li>健康大盘中，选择ADL领先大盘、相对强度较高的个股</li>
+                                <li>弱势大盘中，优先选择防御性板块（如公用事业、消费）</li>
+                            </ul>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">注意事项</h3>
+                            <ul class="list-disc pl-6 text-dark/80 space-y-2">
+                                <li>不同市场（美股、A股）的内部指标特性不同，需结合市场特点调整参数</li>
+                                <li>指标信号需通过价格行为确认（如ADL背离后，需等待价格跌破趋势线确认反转）</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 第9章 -->
+                <section id="chapter9" class="mb-12 scroll-mt-24">
+                    <div class="bg-white rounded-xl shadow-md p-6 sm:p-8">
+                        <div class="flex items-center gap-3 mb-6 cursor-pointer chapter-toggle" onclick="toggleChapter('chapter9')">
+                            <i class="fa fa-balance-scale text-primary"></i>
+                            <h2 class="text-2xl font-bold text-primary">第9章：相对强度（RS）</h2>
+                        </div>
+                        <div class="chapter-content">
+                            <h3 class="text-xl font-semibold mb-4 text-dark">相对强度的核心概念</h3>
+                            <ul class="list-disc pl-6 text-dark/80 mb-6 space-y-2">
+                                <li>衡量个股/板块与大盘指数的表现对比，识别强势股/弱势股</li>
+                                <li>核心逻辑：相对强度高的个股→上升趋势中涨幅更大，下跌趋势中跌幅更小</li>
+                            </ul>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">相对强度的计算与图表</h3>
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">计算公式</h4>
+                            <p class="text-dark/80 mb-4">相对强度（RS）=（个股价格 / 大盘指数）× 1000（标准化后便于对比）</p>
+                            
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">RS线解读</h4>
+                            <ul class="list-disc pl-6 text-dark/80 mb-6 space-y-2">
+                                <li>RS线上升→个股表现强于大盘</li>
+                                <li>RS线下降→个股表现弱于大盘</li>
+                                <li>RS线横盘→个股与大盘表现同步</li>
+                            </ul>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">相对强度的实战应用</h3>
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">强势股识别</h4>
+                            <ul class="list-disc pl-6 text-dark/80 mb-4 space-y-2">
+                                <li>上升趋势中，选择RS线持续上升且位于均线上方的个股</li>
+                                <li>个股价格回调但RS线不创新低（RS线与价格底背离）→买入信号</li>
+                            </ul>
+                            
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">弱势股识别</h4>
+                            <ul class="list-disc pl-6 text-dark/80 mb-4 space-y-2">
+                                <li>下跌趋势中，RS线持续下降且位于均线下方的个股→可能继续弱势</li>
+                                <li>个股价格反弹但RS线不创新高（RS线与价格顶背离）→卖出信号</li>
+                            </ul>
+                            
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">板块轮动分析</h4>
+                            <ul class="list-disc pl-6 text-dark/80 mb-6 space-y-2">
+                                <li>对比不同板块的RS线，识别当前领涨板块（RS线突破前期阻力）</li>
+                                <li>板块RS线从下降转为上升→可能是板块轮动的信号</li>
+                            </ul>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">相对强度与价格行为的结合</h3>
+                            <ul class="list-disc pl-6 text-dark/80 mb-6 space-y-2">
+                                <li>价格突破阻力位+RS线同步突破阻力位→确认强势有效</li>
+                                <li>价格跌破支撑位+RS线同步跌破支撑位→确认弱势有效</li>
+                                <li>价格与RS线背离→警惕趋势反转（如价格创新高但RS线未创新高→可能回调）</li>
+                            </ul>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">常见误区</h3>
+                            <ul class="list-disc pl-6 text-dark/80 space-y-2">
+                                <li>相对强度需在同一市场环境下对比（不同市场的个股RS不具可比性）</li>
+                                <li>过度关注短期RS线波动（建议用周线RS线分析长期趋势）</li>
+                                <li>忽视趋势阶段（Stage 2上升趋势中，RS线的有效性更高）</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 第10章 -->
+                <section id="chapter10" class="mb-12 scroll-mt-24">
+                    <div class="bg-white rounded-xl shadow-md p-6 sm:p-8">
+                        <div class="flex items-center gap-3 mb-6 cursor-pointer chapter-toggle" onclick="toggleChapter('chapter10')">
+                            <i class="fa fa-area-chart text-primary"></i>
+                            <h2 class="text-2xl font-bold text-primary">第10章：趋势</h2>
+                        </div>
+                        <div class="chapter-content">
+                            <h3 class="text-xl font-semibold mb-4 text-dark">趋势的定义与分类</h3>
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">核心定义</h4>
+                            <p class="text-dark/80 mb-4">趋势是价格在一定时间内的总体走向，由一系列高低点构成</p>
+                            
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">分类</h4>
+                            <ul class="list-disc pl-6 text-dark/80 mb-6 space-y-2">
+                                <li>上升趋势：更高的高点+更高的低点</li>
+                                <li>下降趋势：更低的高点+更低的低点</li>
+                                <li>横盘趋势：价格在一定区间内波动，无明显高低点规律</li>
+                            </ul>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">趋势的时间框架</h3>
+                            <div class="table-wrapper mb-6">
+                                <table class="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-sm">
+                                    <thead class="bg-primary text-white">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left">时间框架</th>
+                                            <th class="px-4 py-3 text-left">特征</th>
+                                            <th class="px-4 py-3 text-left">交易策略</th>
+                                            <th class="px-4 py-3 text-left">止损设置</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">长期趋势（周线/月线）</td>
+                                            <td class="px-4 py-3 text-dark/80">持续时间长（数月至数年），波动幅度大</td>
+                                            <td class="px-4 py-3 text-dark/80">趋势跟踪，持有时间长</td>
+                                            <td class="px-4 py-3 text-dark/80">宽松（如跌破200MA）</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">中期趋势（日线）</td>
+                                            <td class="px-4 py-3 text-dark/80">持续时间中等（数周至数月），波动适中</td>
+                                            <td class="px-4 py-3 text-dark/80">回调买入，持有时间中等</td>
+                                            <td class="px-4 py-3 text-dark/80">适中（如跌破40MA）</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">短期趋势（小时线）</td>
+                                            <td class="px-4 py-3 text-dark/80">持续时间短（数小时至数天），波动频繁</td>
+                                            <td class="px-4 py-3 text-dark/80">突破交易，持有时间短</td>
+                                            <td class="px-4 py-3 text-dark/80">严格（如跌破20MA）</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">趋势的识别与确认</h3>
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">趋势线确认</h4>
+                            <ul class="list-disc pl-6 text-dark/80 mb-4 space-y-2">
+                                <li>上升趋势线：连接2个以上低点，价格在趋势线上方运行</li>
+                                <li>下降趋势线：连接2个以上高点，价格在趋势线下方运行</li>
+                                <li>趋势线被触及的次数越多→有效性越高；斜率越平缓→可持续性越强</li>
+                            </ul>
+                            
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">移动平均线确认</h4>
+                            <ul class="list-disc pl-6 text-dark/80 mb-4 space-y-2">
+                                <li>短期MA在长期MA上方+均向上倾斜→确认上升趋势</li>
+                                <li>短期MA在长期MA下方+均向下倾斜→确认下降趋势</li>
+                            </ul>
+                            
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">价格结构确认</h4>
+                            <ul class="list-disc pl-6 text-dark/80 mb-6 space-y-2">
+                                <li>上升趋势：持续创造更高的高点和更高的低点</li>
+                                <li>下降趋势：持续创造更低的高点和更低的低点</li>
+                            </ul>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">趋势交易策略</h3>
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">趋势跟踪策略</h4>
+                            <ul class="list-disc pl-6 text-dark/80 mb-4 space-y-2">
+                                <li>入场：趋势确认后，价格回调至支撑位（上升趋势）或反弹至阻力位（下降趋势）</li>
+                                <li>出场：价格跌破趋势线/MA，或出现反转信号</li>
+                            </ul>
+                            
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">趋势反转策略</h4>
+                            <ul class="list-disc pl-6 text-dark/80 mb-4 space-y-2">
+                                <li>信号：价格突破趋势线+MA排列改变+反转烛台形态</li>
+                                <li>操作：轻仓试探，严格止损（反转信号可靠性低于趋势信号）</li>
+                            </ul>
+                            
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">趋势阶段交易策略</h4>
+                            <ul class="list-disc pl-6 text-dark/80 mb-6 space-y-2">
+                                <li>Stage 2（上升期）：积极做多，回调买入</li>
+                                <li>Stage 4（下降期）：积极做空，反弹卖出</li>
+                                <li>Stage 1/3（横盘/震荡期）：观望或轻仓区间交易</li>
+                            </ul>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">趋势交易的风险管理</h3>
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">止损设置</h4>
+                            <ul class="list-disc pl-6 text-dark/80 mb-4 space-y-2">
+                                <li>上升趋势：止损在最近的显著低点下方或20MA下方</li>
+                                <li>下降趋势：止损在最近的显著高点上方或20MA上方</li>
+                            </ul>
+                            
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">仓位管理</h4>
+                            <ul class="list-disc pl-6 text-dark/80 mb-4 space-y-2">
+                                <li>趋势初期：轻仓试探（30-50%计划仓位）</li>
+                                <li>趋势确认：逐步加仓（总仓位不超过15%单品种）</li>
+                                <li>趋势末期：减仓（避免趋势反转导致亏损）</li>
+                            </ul>
+                            
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">移动止损应用</h4>
+                            <ul class="list-disc pl-6 text-dark/80 space-y-2">
+                                <li>价格突破前高→上移止损至突破位下方</li>
+                                <li>20MA跟随趋势→止损上移至20MA下方</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 第11章 -->
+                <section id="chapter11" class="mb-12 scroll-mt-24">
+                    <div class="bg-white rounded-xl shadow-md p-6 sm:p-8">
+                        <div class="flex items-center gap-3 mb-6 cursor-pointer chapter-toggle" onclick="toggleChapter('chapter11')">
+                            <i class="fa fa-step-forward text-primary"></i>
+                            <h2 class="text-2xl font-bold text-primary">第11章：缺口</h2>
+                        </div>
+                        <div class="chapter-content">
+                            <h3 class="text-xl font-semibold mb-4 text-dark">缺口的类型与特征</h3>
+                            <div class="table-wrapper mb-6">
+                                <table class="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-sm">
+                                    <thead class="bg-primary text-white">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left">缺口类型</th>
+                                            <th class="px-4 py-3 text-left">出现位置</th>
+                                            <th class="px-4 py-3 text-left">市场含义</th>
+                                            <th class="px-4 py-3 text-left">后续走势</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">普通缺口</td>
+                                            <td class="px-4 py-3 text-dark/80">横盘震荡区间内</td>
+                                            <td class="px-4 py-3 text-dark/80">市场情绪平淡，无明显趋势方向</td>
+                                            <td class="px-4 py-3 text-dark/80">短期内可能回补</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">突破缺口</td>
+                                            <td class="px-4 py-3 text-dark/80">趋势启动初期，突破横盘区间</td>
+                                            <td class="px-4 py-3 text-dark/80">趋势确认信号，市场情绪突变</td>
+                                            <td class="px-4 py-3 text-dark/80">通常不回补，趋势延续</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">持续缺口</td>
+                                            <td class="px-4 py-3 text-dark/80">趋势中途，价格快速运行</td>
+                                            <td class="px-4 py-3 text-dark/80">趋势加速信号，momentum强劲</td>
+                                            <td class="px-4 py-3 text-dark/80">可能回补，但趋势仍延续</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">衰竭缺口</td>
+                                            <td class="px-4 py-3 text-dark/80">趋势末期，价格极端位置</td>
+                                            <td class="px-4 py-3 text-dark/80">趋势反转预警，市场情绪耗尽</td>
+                                            <td class="px-4 py-3 text-dark/80">大概率回补，趋势可能反转</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">缺口的实战应用</h3>
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">突破缺口</h4>
+                            <ul class="list-disc pl-6 text-dark/80 mb-4 space-y-2">
+                                <li>确认条件：缺口伴随放量+价格突破横盘区间+后续不回补缺口</li>
+                                <li>操作：突破缺口出现后，价格回调至缺口上沿（支撑位）→买入（上升趋势）</li>
+                            </ul>
+                            
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">衰竭缺口</h4>
+                            <ul class="list-disc pl-6 text-dark/80 mb-6 space-y-2">
+                                <li>识别信号：趋势末期出现缺口+成交量萎缩+后续价格快速回补缺口</li>
+                                <li>操作：衰竭缺口出现后，避免追涨/追跌，等待反转信号</li>
+                            </ul>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">缺口与支撑阻力的关系</h3>
+                            <ul class="list-disc pl-6 text-dark/80 space-y-2">
+                                <li>缺口区域是重要的支撑/阻力位（如突破缺口的上沿→支撑位，下沿→阻力位）</li>
+                                <li>价格回补缺口后，缺口区域的支撑/阻力作用反转（如回补突破缺口后，上沿可能转化为阻力位）</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 第12章 -->
+                <section id="chapter12" class="mb-12 scroll-mt-24">
+                    <div class="bg-white rounded-xl shadow-md p-6 sm:p-8">
+                        <div class="flex items-center gap-3 mb-6 cursor-pointer chapter-toggle" onclick="toggleChapter('chapter12')">
+                            <i class="fa fa-clock-o text-primary"></i>
+                            <h2 class="text-2xl font-bold text-primary">第12章：多时间框架</h2>
+                        </div>
+                        <div class="chapter-content">
+                            <h3 class="text-xl font-semibold mb-4 text-dark">多时间框架分析的核心逻辑</h3>
+                            <ul class="list-disc pl-6 text-dark/80 mb-6 space-y-2">
+                                <li>大框架定方向，小框架找入场点（避免"只见树木不见森林"）</li>
+                                <li>不同时间框架的趋势需一致（如周线上升+日线上升→趋势更可靠）</li>
+                            </ul>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">多时间框架的搭配与应用</h3>
+                            <div class="table-wrapper mb-6">
+                                <table class="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-sm">
+                                    <thead class="bg-primary text-white">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left">时间框架</th>
+                                            <th class="px-4 py-3 text-left">作用</th>
+                                            <th class="px-4 py-3 text-left">分析重点</th>
+                                            <th class="px-4 py-3 text-left">操作信号</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">周线（长期）</td>
+                                            <td class="px-4 py-3 text-dark/80">确定总体趋势方向</td>
+                                            <td class="px-4 py-3 text-dark/80">趋势阶段（Stage 1-4）、200MA位置</td>
+                                            <td class="px-4 py-3 text-dark/80">趋势确认/反转的大方向</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">日线（中期）</td>
+                                            <td class="px-4 py-3 text-dark/80">确认中期趋势强度</td>
+                                            <td class="px-4 py-3 text-dark/80">40MA位置、支撑阻力位</td>
+                                            <td class="px-4 py-3 text-dark/80">入场时机的主要参考</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-3 font-medium">小时线（短期）</td>
+                                            <td class="px-4 py-3 text-dark/80">寻找精确入场点</td>
+                                            <td class="px-4 py-3 text-dark/80">20MA位置、烛台形态、成交量</td>
+                                            <td class="px-4 py-3 text-dark/80">细化入场时机，降低成本</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">实战案例：多时间框架交易流程</h3>
+                            <ol class="list-decimal pl-6 text-dark/80 space-y-2">
+                                <li>周线分析：确认Stage 2上升趋势（价格在200MA上方，更高高点+更高低点）</li>
+                                <li>日线分析：价格回调至40MA附近，出现底部影线烛台+放量</li>
+                                <li>小时线分析：价格突破小时线趋势线，出现+WRB→入场</li>
+                                <li>止损：日线最近低点下方</li>
+                                <li>目标：周线前期高点</li>
+                            </ol>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 第13章 -->
+                <section id="chapter13" class="mb-12 scroll-mt-24">
+                    <div class="bg-white rounded-xl shadow-md p-6 sm:p-8">
+                        <div class="flex items-center gap-3 mb-6 cursor-pointer chapter-toggle" onclick="toggleChapter('chapter13')">
+                            <i class="fa fa-exclamation-triangle text-primary"></i>
+                            <h2 class="text-2xl font-bold text-primary">第13章：形态失效</h2>
+                        </div>
+                        <div class="chapter-content">
+                            <h3 class="text-xl font-semibold mb-4 text-dark">形态失效的常见信号</h3>
+                            <ul class="list-disc pl-6 text-dark/80 mb-6 space-y-2">
+                                <li>突破后迅速回抽：价格突破支撑/阻力位后，短期内回抽并站稳另一侧</li>
+                                <li>成交量不足：突破/反转时成交量萎缩，缺乏资金支撑</li>
+                                <li>与大盘背离：个股形态信号与大盘趋势相反（如个股突破但大盘下跌）</li>
+                                <li>指标矛盾：MA/成交量/RS等指标与形态信号不一致</li>
+                            </ul>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">形态失效的应对策略</h3>
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">立即止损</h4>
+                            <p class="text-dark/80 mb-4">形态失效后，毫不犹豫离场（避免亏损扩大）</p>
+                            
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">等待二次确认</h4>
+                            <p class="text-dark/80 mb-4">失效后等待新的信号（如再次突破、反转烛台）</p>
+                            
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">调整分析框架</h4>
+                            <p class="text-dark/80 mb-6">检查时间框架是否合适（小框架失效可能是大框架趋势的正常波动）</p>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">避免形态失效的技巧</h3>
+                            <ul class="list-disc pl-6 text-dark/80 space-y-2">
+                                <li>多维度验证：形态+成交量+MA+大盘趋势</li>
+                                <li>不追求"完美形态"：市场无绝对完美的信号，接受一定的容错率</li>
+                                <li>关注形态出现的位置：关键支撑/阻力位的形态信号比普通位置更可靠</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 第14章 -->
+                <section id="chapter14" class="mb-12 scroll-mt-24">
+                    <div class="bg-white rounded-xl shadow-md p-6 sm:p-8">
+                        <div class="flex items-center gap-3 mb-6 cursor-pointer chapter-toggle" onclick="toggleChapter('chapter14')">
+                            <i class="fa fa-money text-primary"></i>
+                            <h2 class="text-2xl font-bold text-primary">第14章：交易与资金管理</h2>
+                        </div>
+                        <div class="chapter-content">
+                            <h3 class="text-xl font-semibold mb-4 text-dark">资金管理的核心原则</h3>
+                            <ul class="list-disc pl-6 text-dark/80 mb-6 space-y-2">
+                                <li><strong>单笔亏损限制</strong>：单笔交易亏损不超过总资金的2%（避免"一次亏损致命"）</li>
+                                <li><strong>分散投资</strong>：单品种仓位不超过15%，总仓位不超过70%（控制非系统性风险）</li>
+                                <li><strong>复利增长</strong>：避免过度交易，保住本金是长期盈利的基础</li>
+                            </ul>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">仓位计算方法</h3>
+                            <p class="text-dark/80 mb-4">仓位=（总资金×2%）/（入场价-止损价）</p>
+                            <p class="text-dark/80 mb-6">例：总资金10万元，入场价10元，止损价9.5元→仓位=（10万×2%）/（10-9.5）=4000股（4万元，40%仓位→需调整，避免超过15%）</p>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">交易计划的制定</h3>
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">入场条件</h4>
+                            <p class="text-dark/80 mb-4">明确趋势阶段、支撑阻力位、烛台形态、成交量等信号</p>
+                            
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">止损位置</h4>
+                            <p class="text-dark/80 mb-4">精确到具体价格，提前设置，不随意更改</p>
+                            
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">目标位</h4>
+                            <p class="text-dark/80 mb-4">分阶段目标（第一目标、第二目标），到达目标后按计划减仓/止盈</p>
+                            
+                            <h4 class="text-lg font-medium mb-3 text-primary/80">应急方案</h4>
+                            <p class="text-dark/80 mb-6">形态失效、大盘突变等情况下的应对措施</p>
+                            
+                            <h3 class="text-xl font-semibold mb-4 text-dark">心态管理</h3>
+                            <ul class="list-disc pl-6 text-dark/80 space-y-2">
+                                <li>避免贪婪与恐惧：严格执行交易计划，不追涨杀跌</li>
+                                <li>接受亏损：亏损是交易的一部分，及时止损，不恋战</li>
+                                <li>保持耐心：等待清晰信号，不强迫交易（90%的利润来自10%的有效交易）</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 总结 -->
+                <section id="conclusion" class="mb-12 scroll-mt-24">
+                    <div class="bg-white rounded-xl shadow-md p-6 sm:p-8">
+                        <div class="flex items-center gap-3 mb-6 cursor-pointer chapter-toggle" onclick="toggleChapter('conclusion')">
+                            <i class="fa fa-check-circle text-primary"></i>
+                            <h2 class="text-2xl font-bold text-primary">总结</h2>
+                        </div>
+                        <div class="chapter-content">
+                            <div class="space-y-4 text-dark/80">
+                                <div class="flex items-start gap-3 p-3 bg-primary/5 rounded-lg">
+                                    <i class="fa fa-lightbulb text-primary text-xl mt-1"></i>
+                                    <p><strong class="text-primary">技术交易的核心是"客观、耐心、纪律"：</strong>以价格行为为根本，以趋势为导向，以风险管理为保障</p>
+                                </div>
+                                <div class="flex items-start gap-3 p-3 bg-primary/5 rounded-lg">
+                                    <i class="fa fa-tools text-primary text-xl mt-1"></i>
+                                    <p><strong class="text-primary">工具不在多而在精：</strong>熟练掌握支撑阻力、烛台分析、MA、成交量，即可覆盖80%的交易场景</p>
+                                </div>
+                                <div class="flex items-start gap-3 p-3 bg-primary/5 rounded-lg">
+                                    <i class="fa fa-graduation-cap text-primary text-xl mt-1"></i>
+                                    <p><strong class="text-primary">持续学习与复盘：</strong>市场在变化，需不断优化策略，总结经验教训</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-primary text-white py-8">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <i class="fa fa-book text-2xl text-secondary"></i>
+                    <span class="text-xl font-bold">Trading Tools and Tactics</span>
+                </div>
+                <div class="text-center md:text-right">
+                    <p class="text-white/80">© 2025 交易学习笔记</p>
+                    <p class="text-white/60 text-sm">基于 Greg Capra 所著书籍整理</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 回到顶部按钮 -->
+    <button id="back-to-top" class="fixed bottom-6 right-6 bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg opacity-0 invisible transition-all duration-300 hover:bg-primary/90">
+        <i class="fa fa-arrow-up"></i>
+    </button>
+
+    <!-- JavaScript 核心修复部分 -->
+    <script>
+        // 1. 移动端菜单切换
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // 2. 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const mainNav = document.getElementById('main-nav');
+            if (window.scrollY > 50) {
+                mainNav.classList.add('nav-scrolled');
+            } else {
+                mainNav.classList.remove('nav-scrolled');
+            }
+
+            // 回到顶部按钮显示/隐藏
+            const backToTop = document.getElementById('back-to-top');
+            if (window.scrollY > 300) {
+                backToTop.classList.remove('opacity-0', 'invisible');
+                backToTop.classList.add('opacity-100', 'visible');
+            } else {
+                backToTop.classList.add('opacity-0', 'invisible');
+                backToTop.classList.remove('opacity-100', 'visible');
+            }
+        });
+
+        // 3. 回到顶部功能
+        document.getElementById('back-to-top').addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // 4. 修复章节折叠/展开核心函数
+        function toggleChapter(chapterId) {
+            const chapter = document.getElementById(chapterId);
+            if (chapter) {
+                // 切换章节的展开/折叠状态
+                chapter.classList.toggle('chapter-expanded');
+            }
+        }
+
+        // 5. 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 确保核心原则章节默认展开
+            const introSection = document.getElementById('intro');
+            if (introSection) {
+                introSection.classList.add('chapter-expanded');
+            }
+        });
+    </script>
+</body>
+</html>
